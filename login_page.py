@@ -19,6 +19,8 @@ class LoginPage(Frame):
                                     font=MEDIUM_FONT, show='*')
         self.enter_button = ttk.Button(self, text="Enter",
                                        command=self.authentication)
+        self.exit_button = ttk.Button(self, text="Exit",
+                                      command=self.quit)
         self.login_window()
 
     def create_sub_frame(self, row, col, r_span, c_span, border_color="red") -> Frame:
@@ -40,12 +42,12 @@ class LoginPage(Frame):
                                fg='white',
                                bg='black')
 
-        # enter_button.grid(column=int(self.full_col / 2), padx=10, pady=10, sticky=W)
         user_label.pack()
         self.user_name_entry.pack()
         password_label.pack()
         self.password_entry.pack()
         self.enter_button.pack()
+        self.exit_button.pack()
 
     def authentication(self):
         try:
@@ -56,4 +58,5 @@ class LoginPage(Frame):
                 db.cursor.close()
                 db.connection.close()
 
-        # print()
+    def quit(self):
+        exit(0)

@@ -27,6 +27,10 @@ class DatabaseConnection:
             print(f'Your connection to database: {record}')
 
     def query(self, username, password):
-        # self.cursor.execute(f'SELECT * FROM login where user=\'{username}\'')
-        self.cursor.execute('SELECT * FROM login where user=\'\' or 1=\'1\' ')
-        print(self.cursor.fetchall())
+        self.cursor.execute(f'SELECT * FROM login where user=\'{username}\'')
+        result = self.cursor.fetchone()
+
+        if result:
+            print(f"Found {result}")
+        else:
+            raise ValueError('Failed to find entries in Database')
