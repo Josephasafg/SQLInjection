@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 
+import mysql
+
 from DatabaseConnector import DatabaseConnection
 
 MEDIUM_FONT = ("verdana", 14)
@@ -53,6 +55,8 @@ class LoginPage(Frame):
         try:
             db = DatabaseConnection()
             db.query(self.user_name.get(), self.password.get())
+        except mysql.connector.Error as error:
+            print(error)
         finally:
             if db.connection.is_connected():
                 db.cursor.close()
