@@ -15,32 +15,42 @@ class DatabaseConnection:
             self.cursor: MySQLCursorPrepared = None
             self.prepared: MySQLCursorPrepared = None
             self.statement = """SELECT * FROM login where user=%s and password=%s"""
-            self.verify_connection()
+            self._verify_connection()
 
         except Error as e:
             print(e)
 
-    def verify_connection(self):
+    def _verify_connection(self):
         if self.connection.is_connected():
             db_info = self.connection.get_server_info()
             print(f"Connected to MySQL Server version {db_info}")
 
             self.cursor = self.connection.cursor()
-            # self.cursor = self.connection.cursor(prepared=True)  # This creates a MySQLCursorPrepared object
+            self.cursor = self.connection.cursor(prepared=True)  # This creates a MySQLCursorPrepared object
             self.cursor.execute('select database();')
             record = self.cursor.fetchone()
             print(f'Your connection to database: {record}')
             self.cursor.close()
 
     def query(self, username, password):
-        self.cursor = self.connection.cursor(prepared=True)
-        # self.cursor.execute(f'SELECT * FROM login where user=\'{username}\' AND password=\'{password}\'')
-        self.cursor.execute(self.statement, (username, password))
-
+        self.cursor = self.connection.cursor()
+        # self.cursor.execute(f'-- SELECT * FROM login where user=\'{username}\' AND password=\'{password}\'')
+        print(f'SELECT * FROM login where user=\'{username}\'')
+        self.cursor.execute(f'SELECT * FROM login where user=\'{username}\'')
         result = self.cursor.fetchall()
 
-        print(result)
-        # if result[0] == username and result[1] == password:
-        #     print(f"Correct input {result}")
-        # else:
-        #     raise ValueError('Failed to find entries in Database')
+        # self.cursor.execute(f'SELECT * FROM login where user={username}')
+        # result = self.cursor.fetchall()
+        if result:
+            print(f'Successfully connected to database as {username}!\nOutput is {result}')
+        else:
+            print(f'Failed to connect to database... incorrect input.')
+
+        # self.cursor = self.connection.cursor(prepared=True)
+        # statement = f'SELECT * FROM login where user=%s AND password=%s'
+        # self.cursor.execute(statement, (username, password))
+
+        # self.cursor = self.connection.cursor()
+        # self.cursor.execute(f'SELECT * FROM login where user=\'{username}\' AND password=\'{password}\'')
+        # statement = f'SELECT * FROM login where user=\'{username}\' AND password=\'{password}\''
+        # self.cursor.execute(statement, (username, password))
